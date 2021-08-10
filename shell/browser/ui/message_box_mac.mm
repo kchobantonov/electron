@@ -98,6 +98,11 @@ NSAlert* CreateNSAlert(const MessageBoxSettings& settings) {
     [alert setIcon:image];
   }
 
+  if (settings.text_width > 0) {
+    auto rect = NSMakeRect(0, 0, settings.text_width, 0);
+    [alert setAccessoryView:[[NSView alloc] initWithFrame:rect]];
+  }
+
   return alert;
 }
 
