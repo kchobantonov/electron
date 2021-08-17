@@ -258,6 +258,9 @@ void ViewDidMoveToSuperview(NSView* self, SEL _cmd) {
 
 }  // namespace
 
+const base::Feature kWindowCaptureMacV2{"WindowCaptureMacV2",
+                                        base::FEATURE_DISABLED_BY_DEFAULT};
+
 NativeWindowMac::NativeWindowMac(const gin_helper::Dictionary& options,
                                  NativeWindow* parent)
     : NativeWindow(options, parent), root_view_(new RootViewMac(this)) {
@@ -1256,7 +1259,7 @@ content::DesktopMediaID NativeWindowMac::GetDesktopMediaID() const {
       content::DesktopMediaID::TYPE_WINDOW, GetAcceleratedWidget());
   // c.f.
   // https://source.chromium.org/chromium/chromium/src/+/master:chrome/browser/media/webrtc/native_desktop_media_list.cc;l=372?q=kWindowCaptureMacV2&ss=chromium
-  if (base::FeatureList::IsEnabled(features::kWindowCaptureMacV2)) {
+  if (base::FeatureList::IsEnabled(kWindowCaptureMacV2)) {
     if (remote_cocoa::ScopedCGWindowID::Get(desktop_media_id.id)) {
       desktop_media_id.window_id = desktop_media_id.id;
     }
