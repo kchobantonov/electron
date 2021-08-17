@@ -185,6 +185,10 @@ void SetPlatformCrashKey() {
 #endif
 }
 
+void SetCrashKeyForDumpsWithoutCrashing() {
+  SetCrashKey("dumps-without-crashing", true);
+}
+
 void SetCrashKeyForGinWrappable(gin::WrapperInfo* info) {
   std::string crash_location;
 

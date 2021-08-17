@@ -1,0 +1,38 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: VerteDinde <khammond@slack-corp.com>
+Date: Tue, 17 Aug 2021 10:29:59 -0700
+Subject: chore: add dumpswithoutcrashing crash key
+
+This patch adds an additional crash key for DumpsWithoutCrashing, a crash
+that is often not user facing for Electron apps. There is currently no easy
+way to filter out these crashes from error-reporters such as Sentry. Adding
+this crash key will allow Electron developers to more easily filter out
+DWoC exceptions from their error reporting tools.
+
+This patch should not be upstreamed. It can be removed if we can more easily
+identify DWoC crashes within Electron itself.
+
+diff --git a/base/debug/dump_without_crashing.cc b/base/debug/dump_without_crashing.cc
+index b7ce35349e3c1bb80a2234e4a28f7c49f8586527..6d0cd58f3ece21bb6981e9ddd23f2af919d0814e 100644
+--- a/base/debug/dump_without_crashing.cc
++++ b/base/debug/dump_without_crashing.cc
+@@ -6,6 +6,9 @@
+ 
+ #include "base/check.h"
+ #include "base/trace_event/base_tracing.h"
++#if !defined(MAS_BUILD)
++#include "electron/shell/common/crash_keys.h"
++#endif
+ 
+ namespace {
+ 
+@@ -22,6 +25,9 @@ namespace debug {
+ bool DumpWithoutCrashing() {
+   TRACE_EVENT0("base", "DumpWithoutCrashing");
+   if (dump_without_crashing_function_) {
++#if !defined(MAS_BUILD)
++    electron::crash_keys::SetCrashKeyForDumpsWithoutCrashing();
++#endif
+     (*dump_without_crashing_function_)();
+     return true;
+   }
